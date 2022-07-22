@@ -29,6 +29,8 @@ class Physics {
       collisionObject.calculateReflection();
       /*       console.log(collisionObject); */
       return collisionObject;
+    } else {
+      console.log('no collision');
     }
 
     return null;

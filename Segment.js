@@ -1,4 +1,4 @@
-let depthLimit = 100;
+let depthLimit = 1000;
 
 class Segment {
   constructor(start, end, MANAGER) {
@@ -55,7 +55,7 @@ class Ray extends Segment {
       /*  this.drawNormal();
       this.drawReflection(); */
     } else {
-      console.log(this.rayDepth);
+      /*  console.log(this.rayDepth); */
       this.colorToStroke([255, 0, 255], 2);
 
       line(this.start.x, this.start.y, this.end.x, this.end.y);
@@ -125,9 +125,12 @@ class Ray extends Segment {
 
   reflectRecursive() {
     if (this.rayDepth < depthLimit) {
-      let ray = this.reflect(true);
-      ray.compute();
-      ray.reflectRecursive();
+      if (this.collisionObject) {
+        let ray = this.reflect(true);
+
+        ray.compute();
+        ray.reflectRecursive();
+      }
     }
   }
 }

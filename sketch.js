@@ -11,8 +11,8 @@ function setup() {
   );
   /*   SEGMENTMANAGER.addLiveRay(createVector(0, 600), createVector(600, 100)); */
 
-  SEGMENTMANAGER.addCollider(createVector(100, 100), createVector(700, 600));
-  SEGMENTMANAGER.addCollider(createVector(20, 420), createVector(700, 400));
+  /*   SEGMENTMANAGER.addCollider(createVector(100, 100), createVector(700, 600));
+  SEGMENTMANAGER.addCollider(createVector(20, 420), createVector(700, 400)); */
 
   //Adding borders
   SEGMENTMANAGER.addCollider(createVector(0, 0), createVector(0, width));
