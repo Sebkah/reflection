@@ -63,7 +63,8 @@ class Ray extends Segment {
 
   drawRay() {
     let tint = map(this.rayDepth, 0, this.MANAGER.depthLimit, 0, 255);
-    this.colorToStroke([255, 255, 255, 255 - tint], 0.05);
+    /*  blendMode(ADD); */
+    this.colorToStroke([255, 127, tint, (255 - tint) / 2], 0.02);
 
     line(
       this.start.x,
@@ -185,16 +186,22 @@ class SegmentManager {
   }
 
   addLight(numberOfRays, center, radius) {
-    let light = new Light(numberOfRays, center, radius, this);
+    let light = new Light(numberOfRays, center, radius, false, this);
+    this.LIGHTS.push(light);
+    return light;
+  }
+
+  addLiveLight(numberOfRays, center, radius) {
+    let light = new Light(numberOfRays, center, radius, true, this);
     this.LIGHTS.push(light);
     return light;
   }
 
   compute() {
-    this.RAYS.forEach((ray) => {
+    this.LIGHTS.forEach((ray) => {
       ray.compute();
     });
-    this.LIGHTS.forEach((ray) => {
+    this.RAYS.forEach((ray) => {
       ray.compute();
     });
   }

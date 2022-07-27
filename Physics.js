@@ -36,6 +36,7 @@ class Physics {
   }
 
   static distance(a, b) {
+    return p5.Vector.sub(a, b).magSq();
     return p5.Vector.dist(a, b);
   }
 

@@ -1,8 +1,9 @@
 class Light {
-  constructor(numberOfRays, center, radius, segmentManager) {
+  constructor(numberOfRays, center, radius, live = false, segmentManager) {
     this.segmentManager = segmentManager;
     this.center = center;
     this.radius = radius;
+    this.live = live;
     this.numberOfRays = numberOfRays;
     this.RAYS = this.initialize();
   }
@@ -29,18 +30,22 @@ class Light {
   }
 
   compute() {
-    this.center.x = mouseX;
-    this.center.y = mouseY;
+    if (this.live) {
+      /*   this.center.x += sin(frameCount * 2) * 4;
+      this.center.y += cos(frameCount * 2) * 4; */
+      this.center.x = mouseX; /*  */
+      this.center.y = mouseY;
 
-    this.RAYS.forEach((segment, index) => {
-      segment.start = this.center;
-      segment.end = p5.Vector.add(
-        this.center,
-        createVector(
-          cos((360 / this.numberOfRays) * index) * this.radius,
-          sin((360 / this.numberOfRays) * index) * this.radius
-        )
-      );
-    });
+      this.RAYS.forEach((segment, index) => {
+        segment.start = this.center;
+        segment.end = p5.Vector.add(
+          this.center,
+          createVector(
+            cos((360 / this.numberOfRays) * index) * this.radius,
+            sin((360 / this.numberOfRays) * index) * this.radius
+          )
+        );
+      });
+    }
   }
 }
