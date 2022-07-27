@@ -226,7 +226,7 @@ class CircleCollider extends Collider {
       // inside the sphere or completely past it
       if (t2 >= 0 && t2 <= 1) {
         // ExitWound
-        return null;
+        return p5.Vector.add(p5.Vector.mult(d, t2), ray.start);
       }
 
       // no intn: FallShort, Past, CompletelyInside
@@ -235,7 +235,10 @@ class CircleCollider extends Collider {
   }
 
   calculateNormal(ray, collisionPoint) {
+    let int = 1;
+    if (p5.Vector.dist(ray.start, this.center) < this.radius) int = -1;
     let normal = p5.Vector.sub(collisionPoint, this.center).normalize();
+    normal.mult(int);
     return normal;
   }
 

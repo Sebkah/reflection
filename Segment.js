@@ -14,7 +14,7 @@ class Segment {
 
   colorToStroke(color, width) {
     strokeWeight(width);
-    stroke(color[0], color[1], color[2]);
+    stroke(color[0], color[1], color[2], color[3]);
   }
 }
 
@@ -63,7 +63,7 @@ class Ray extends Segment {
 
   drawRay() {
     let tint = map(this.rayDepth, 0, this.MANAGER.depthLimit, 0, 255);
-    this.colorToStroke([255 - tint, 255 - tint, 255 - tint], 2);
+    this.colorToStroke([255, 255, 255, 255 - tint], 0.05);
 
     line(
       this.start.x,
@@ -106,7 +106,7 @@ class Ray extends Segment {
 
     let positionCorrected = p5.Vector.add(
       this.collisionObject.position,
-      this.collisionObject.normal
+      p5.Vector.mult(this.collisionObject.normal, 0.001)
     );
     let ray = new Ray(
       positionCorrected,
@@ -150,6 +150,7 @@ class SegmentManager {
   constructor(depthLimit = 50, recursive = false, drawColliders = true) {
     this.COLLIDERS = new Array();
     this.RAYS = new Array();
+    this.LIGHTS = new Array();
 
     this.depthLimit = depthLimit;
     this.recursive = recursive;
@@ -183,8 +184,17 @@ class SegmentManager {
     return circle;
   }
 
+  addLight(numberOfRays, center, radius) {
+    let light = new Light(numberOfRays, center, radius, this);
+    this.LIGHTS.push(light);
+    return light;
+  }
+
   compute() {
     this.RAYS.forEach((ray) => {
+      ray.compute();
+    });
+    this.LIGHTS.forEach((ray) => {
       ray.compute();
     });
   }
