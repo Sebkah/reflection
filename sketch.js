@@ -4,15 +4,15 @@ let firstRay;
 function setup() {
   createCanvas(800, 800);
 
-  SEGMENTMANAGER = new SegmentManager();
+  SEGMENTMANAGER = new SegmentManager(10);
   firstRay = SEGMENTMANAGER.addLiveRay(
-    createVector(400, 200),
+    createVector(100, 400),
     createVector(800, 200)
   );
   /*   SEGMENTMANAGER.addLiveRay(createVector(0, 600), createVector(600, 100)); */
 
-  /*   SEGMENTMANAGER.addCollider(createVector(100, 100), createVector(700, 600));
-  SEGMENTMANAGER.addCollider(createVector(20, 420), createVector(700, 400)); */
+  SEGMENTMANAGER.addCollider(createVector(100, 100), createVector(700, 600));
+  SEGMENTMANAGER.addCollider(createVector(20, 420), createVector(700, 400));
 
   //Adding borders
   SEGMENTMANAGER.addCollider(createVector(0, 0), createVector(0, width));

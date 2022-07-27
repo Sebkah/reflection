@@ -1,4 +1,4 @@
-let depthLimit = 1000;
+let depthLimit = 200;
 
 class Segment {
   constructor(start, end, MANAGER) {
@@ -43,8 +43,6 @@ class Ray extends Segment {
 
         if (this.rayDepth == 0) this.reflectRecursive();
       }
-
-      /*    console.log(this.collisionObject); */
     }
   }
 
@@ -55,7 +53,6 @@ class Ray extends Segment {
       /*  this.drawNormal();
       this.drawReflection(); */
     } else {
-      /*  console.log(this.rayDepth); */
       this.colorToStroke([255, 0, 255], 2);
 
       line(this.start.x, this.start.y, this.end.x, this.end.y);
@@ -63,7 +60,7 @@ class Ray extends Segment {
   }
 
   drawRay() {
-    let tint = map(this.rayDepth, 0, depthLimit, 0, 255);
+    let tint = map(this.rayDepth, 0, this.MANAGER.depthLimit, 0, 255);
     this.colorToStroke([255 - tint, 255 - tint, 255 - tint], 2);
 
     line(
@@ -124,7 +121,7 @@ class Ray extends Segment {
   }
 
   reflectRecursive() {
-    if (this.rayDepth < depthLimit) {
+    if (this.rayDepth < this.MANAGER.depthLimit) {
       if (this.collisionObject) {
         let ray = this.reflect(true);
 
@@ -148,9 +145,10 @@ class LiveRay extends Ray {
 }
 
 class SegmentManager {
-  constructor() {
+  constructor(depthLimit = 50) {
     this.COLLIDERS = new Array();
     this.RAYS = new Array();
+    this.depthLimit = depthLimit;
   }
 
   initialize() {}
@@ -188,6 +186,10 @@ class SegmentManager {
 
   cleanReflections() {
     this.RAYS = this.RAYS.filter((segment) => {
+      return segment.rayDepth == 0;
+    });
+    this.COLLIDERS = this.COLLIDERS.filter((segment) => {
+      if (!segment.rayDepth) return true;
       return segment.rayDepth == 0;
     });
   }
