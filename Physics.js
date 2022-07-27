@@ -108,3 +108,72 @@ class CollisionObject {
     );
   }
 }
+
+class Collider {
+  constructor() {}
+
+  findIntersection() {}
+  calculateNormal() {}
+  calculateReflection() {}
+  draw() {}
+}
+
+class SegmentCollider extends Collider {
+  constructor(start, end, MANAGER) {
+    this.start = start.copy();
+    this.end = end.copy();
+
+    this.MANAGER = MANAGER;
+  }
+
+  draw() {
+    this.colorToStroke([255, 255, 0], 2);
+
+    line(this.start.x, this.start.y, this.end.x, this.end.y);
+  }
+
+  findIntersection(ray) {
+    let p = this.start.copy();
+    let q = ray.start.copy();
+
+    let r = p5.Vector.sub(this.end, p);
+    let s = p5.Vector.sub(ray.end, q);
+
+    let t = this.crossP(p5.Vector.sub(q, p), s) / this.crossP(r, s);
+    let u = this.crossP(p5.Vector.sub(q, p), r) / this.crossP(r, s);
+
+    if (this.crossP(r, s) != 0 && 0 < u && u <= 1 && t > 0 && t <= 1) {
+      let collisionPoint = p5.Vector.add(p, p5.Vector.mult(r, t));
+      return collisionPoint;
+    } else {
+      return null;
+    }
+  }
+
+  calculateNormal(ray) {
+    let v = this.start;
+    let w = this.end;
+    let p = ray.start;
+
+    let l = pow(p5.Vector.dist(v, w), 2);
+
+    let t = p5.Vector.dot(p5.Vector.sub(p, v), p5.Vector.sub(w, v)) / l;
+    let projection = p5.Vector.add(v, p5.Vector.mult(p5.Vector.sub(w, v), t));
+
+    let normal = p5.Vector.sub(p, projection);
+    normal.normalize();
+
+    this.normal = normal;
+
+    return p5.Vector.add(p5.Vector.mult(normal, 15), this.position);
+  }
+
+  calculateReflection(ray, normal) {
+    let d = p5.Vector.sub(ray.end, ray.start);
+    let n = normal;
+    let r = p5.Vector.sub(d, p5.Vector.mult(n, p5.Vector.dot(d, n) * 2));
+    r.normalize();
+
+    return p5.Vector.add(this.position, p5.Vector.mult(r, 1500));
+  }
+}
