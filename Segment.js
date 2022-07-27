@@ -1,5 +1,3 @@
-let depthLimit = 200;
-
 class Segment {
   constructor(start, end, MANAGER) {
     this.start = start.copy();
@@ -41,7 +39,11 @@ class Ray extends Segment {
         this.isColliding = true;
         this.collisionObject = collisionObject;
 
-        if (this.rayDepth == 0) this.reflectRecursive();
+        if (this.MANAGER.recursive) {
+          if (this.rayDepth == 0) this.reflectRecursive();
+        } else {
+          this.reflect();
+        }
       }
     }
   }
@@ -50,8 +52,8 @@ class Ray extends Segment {
     if (this.isColliding) {
       this.drawRay();
 
-      /*  this.drawNormal();
-      this.drawReflection(); */
+      /* this.drawNormal(); */
+      /* this.drawReflection(); */
     } else {
       this.colorToStroke([255, 0, 255], 2);
 
@@ -145,10 +147,14 @@ class LiveRay extends Ray {
 }
 
 class SegmentManager {
-  constructor(depthLimit = 50) {
+  constructor(depthLimit = 50, recursive = false, drawColliders = true) {
     this.COLLIDERS = new Array();
     this.RAYS = new Array();
+
     this.depthLimit = depthLimit;
+    this.recursive = recursive;
+
+    this.drawColliders = drawColliders;
   }
 
   initialize() {}
@@ -164,13 +170,22 @@ class SegmentManager {
     return ray;
   }
 
-  addCollider(start, end) {
-    this.COLLIDERS.push(new Segment(start, end, this));
+  addSegmentCollider(start, end) {
+    let segment = new SegmentCollider(start, end, this);
+    this.COLLIDERS.push(segment);
+
+    return segment;
+  }
+  addCircleCollider(center, radius) {
+    let circle = new CircleCollider(center, radius, this);
+    this.COLLIDERS.push(circle);
+
+    return circle;
   }
 
   compute() {
-    this.RAYS.forEach((segment) => {
-      segment.compute();
+    this.RAYS.forEach((ray) => {
+      ray.compute();
     });
   }
 
@@ -178,19 +193,19 @@ class SegmentManager {
     this.RAYS.forEach((segment) => {
       segment.draw();
     });
-    this.COLLIDERS.forEach((segment) => {
-      segment.draw();
-    });
-    console.log(this.RAYS.length);
+    if (this.drawColliders) {
+      this.COLLIDERS.forEach((segment) => {
+        segment.draw();
+      });
+    }
+    /* console.log(this.RAYS.length); */
   }
 
   cleanReflections() {
-    this.RAYS = this.RAYS.filter((segment) => {
-      return segment.rayDepth == 0;
-    });
-    this.COLLIDERS = this.COLLIDERS.filter((segment) => {
-      if (!segment.rayDepth) return true;
-      return segment.rayDepth == 0;
-    });
+    if (this.recursive) {
+      this.RAYS = this.RAYS.filter((segment) => {
+        return segment.rayDepth == 0;
+      });
+    }
   }
 }
