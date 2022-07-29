@@ -6,7 +6,7 @@ function setup() {
 
   angleMode(DEGREES);
 
-  SEGMENTMANAGER = new SegmentManager(20, true, false);
+  SEGMENTMANAGER = new SegmentManager(5, true, false);
   /*   firstRay = SEGMENTMANAGER.addLiveRay(
     createVector(100, 400),
     createVector(800, 200)
@@ -22,7 +22,7 @@ function setup() {
     createVector(700, 400)
   ); */
 
-  SEGMENTMANAGER.addLiveLight(2000, createVector(500, 500), 2000);
+  SEGMENTMANAGER.addLiveLight(8000, createVector(500, 500), 2000);
 
   //Adding borders
   /* SEGMENTMANAGER.addSegmentCollider(createVector(0, 0), createVector(0, width));
@@ -39,28 +39,27 @@ function setup() {
   /*   SEGMENTMANAGER.addCircleCollider(createVector(100, 100), 100); */
   /* SEGMENTMANAGER.addCircleCollider(createVector(40, 200), 20); */
   SEGMENTMANAGER.addCircleCollider(createVector(400, 400), 400);
-  /*   SEGMENTMANAGER.addCircleCollider(createVector(400, 400), 200); */
+  SEGMENTMANAGER.addCircleCollider(createVector(400, 400), 200);
   SEGMENTMANAGER.addCircleCollider(createVector(340, 430), 60);
   SEGMENTMANAGER.addCircleCollider(createVector(40, 430), 60);
   SEGMENTMANAGER.addCircleCollider(createVector(600, 200), 60);
   SEGMENTMANAGER.addCircleCollider(createVector(460, 450), 80);
   /*  SEGMENTMANAGER.addCircleCollider(createVector(400, 350), 80); */
 
-  /*   for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 10; i++) {
     let center = createVector(random(0, width), random(0, width));
     let centerL = createVector(random(0, width), random(0, width));
     let offSet = createVector(random(0, width / 10), random(0, width / 10));
-    let r = randomGaussian(10, 100);
+    let r = abs(randomGaussian(10, 100));
 
     SEGMENTMANAGER.addCircleCollider(center, r);
-    SEGMENTMANAGER.addLight(4000, center.add(offSet), 2000);
-    SEGMENTMANAGER.addLiveLight(4000, centerL, 2000);
-
-    SEGMENTMANAGER.addSegmentCollider(
+    /*  SEGMENTMANAGER.addLight(4000, center.add(offSet), 2000); */
+    /*  SEGMENTMANAGER.addLiveLight(4000, centerL, 2000); */
+    /* SEGMENTMANAGER.addSegmentCollider(
       createVector(random(0, width), random(0, width)),
       createVector(random(0, width), random(0, width))
-    );
-  } */
+    ); */
+  }
 
   /*   SEGMENTMANAGER.addRay(createVector(700, 100), createVector(0, 600));
   SEGMENTMANAGER.addRay(createVector(100, 100), createVector(0, 600)); */

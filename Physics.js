@@ -29,15 +29,14 @@ class Physics {
       collisionObject.calculateReflection();
 
       return collisionObject;
-    } else {
     }
 
     return null;
   }
 
   static distance(a, b) {
-    return p5.Vector.sub(a, b).magSq();
     return p5.Vector.dist(a, b);
+    return p5.Vector.sub(a, b).magSq();
   }
 
   static crossP(v, w) {
@@ -62,10 +61,10 @@ class CollisionObject {
   calculateNormal() {
     /*     console.log(this.ray, this.position); */
     this.normal = this.collider.calculateNormal(this.ray, this.position);
-    this.normalOnContact = p5.Vector.add(
+    /* this.normalOnContact = p5.Vector.add(
       p5.Vector.mult(this.normal, 15),
       this.position
-    );
+    ); */
   }
 
   calculateReflection() {
@@ -90,8 +89,8 @@ class Collider {
 class SegmentCollider extends Collider {
   constructor(start, end, MANAGER) {
     super();
-    this.start = start.copy();
-    this.end = end.copy();
+    this.start = start;
+    this.end = end;
 
     this.MANAGER = MANAGER;
   }
@@ -108,8 +107,8 @@ class SegmentCollider extends Collider {
   }
 
   findIntersection(ray) {
-    let p = this.start.copy();
-    let q = ray.start.copy();
+    let p = this.start;
+    let q = ray.start;
 
     let r = p5.Vector.sub(this.end, p);
     let s = p5.Vector.sub(ray.end, q);
@@ -160,7 +159,7 @@ class SegmentCollider extends Collider {
 class CircleCollider extends Collider {
   constructor(center, radius, MANAGER) {
     super();
-    this.center = center.copy();
+    this.center = center;
     this.radius = radius;
 
     this.MANAGER = MANAGER;

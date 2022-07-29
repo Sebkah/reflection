@@ -19,10 +19,12 @@ class Segment {
 }
 
 class Ray extends Segment {
-  constructor(start, end, MANAGER, rayDepth = 0) {
+  constructor(start, end, MANAGER, rayDepth = 0, color = [255, 0, 255]) {
     super(start, end, MANAGER);
     this.rayDepth = rayDepth;
     this.spawnedChildRay = false;
+
+    this.color = color;
 
     this.isColliding = false;
     this.collisionObject = null;
@@ -49,22 +51,16 @@ class Ray extends Segment {
   }
 
   draw() {
-    if (this.isColliding) {
-      this.drawRay();
+    if (this.isColliding) this.drawRay();
 
-      /* this.drawNormal(); */
-      /* this.drawReflection(); */
-    } else {
-      this.colorToStroke([255, 0, 255], 2);
-
-      line(this.start.x, this.start.y, this.end.x, this.end.y);
-    }
+    /* this.drawNormal(); */
+    /* this.drawReflection(); */
   }
 
   drawRay() {
     let tint = map(this.rayDepth, 0, this.MANAGER.depthLimit, 0, 255);
     /*  blendMode(ADD); */
-    this.colorToStroke([255, 127, tint, (255 - tint) / 2], 0.02);
+    this.colorToStroke([...this.color, 255 - tint], 0.05);
 
     line(
       this.start.x,
@@ -113,10 +109,11 @@ class Ray extends Segment {
       positionCorrected,
       this.collisionObject.reflectionOnContact,
       this.MANAGER,
-      this.rayDepth + 1
+      this.rayDepth + 1,
+      this.color
     );
 
-    this.MANAGER.RAYS.push(ray);
+    this.MANAGER.REFLECTIONS.push(ray);
 
     if (!recursive) this.spawnedChildRay = true;
 
@@ -151,6 +148,7 @@ class SegmentManager {
   constructor(depthLimit = 50, recursive = false, drawColliders = true) {
     this.COLLIDERS = new Array();
     this.RAYS = new Array();
+    this.REFLECTIONS = new Array();
     this.LIGHTS = new Array();
 
     this.depthLimit = depthLimit;
@@ -159,15 +157,13 @@ class SegmentManager {
     this.drawColliders = drawColliders;
   }
 
-  initialize() {}
-
   addLiveRay(start, end) {
     let ray = new LiveRay(start, end, this);
     this.RAYS.push(ray);
     return ray;
   }
-  addRay(start, end) {
-    let ray = new Ray(start, end, this);
+  addRay(start, end, color) {
+    let ray = new Ray(start, end, this, 0, color);
     this.RAYS.push(ray);
     return ray;
   }
@@ -198,8 +194,8 @@ class SegmentManager {
   }
 
   compute() {
-    this.LIGHTS.forEach((ray) => {
-      ray.compute();
+    this.LIGHTS.forEach((light) => {
+      light.compute();
     });
     this.RAYS.forEach((ray) => {
       ray.compute();
@@ -210,19 +206,20 @@ class SegmentManager {
     this.RAYS.forEach((segment) => {
       segment.draw();
     });
+    this.REFLECTIONS.forEach((segment) => {
+      segment.draw();
+    });
     if (this.drawColliders) {
       this.COLLIDERS.forEach((segment) => {
         segment.draw();
       });
     }
-    /* console.log(this.RAYS.length); */
   }
 
   cleanReflections() {
-    if (this.recursive) {
-      this.RAYS = this.RAYS.filter((segment) => {
-        return segment.rayDepth == 0;
-      });
-    }
+    console.log(this.RAYS.length);
+    console.log(this.REFLECTIONS.length);
+    this.REFLECTIONS = [];
+    /*  console.log(this.REFLECTIONS.length); */
   }
 }
